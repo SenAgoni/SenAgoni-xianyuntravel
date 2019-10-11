@@ -4,13 +4,17 @@
     <Header/>
     <!-- 这是页面文件的主要渲染的文件 -->
     <nuxt />
+    <!-- 这是公共底部部分 -->
+    <Footer/>
   </div>
 </template>
 <script>
 import Header from "@/components/header"
+import Footer from "@/components/footer"
 export default {
   components:{
-    Header
+    Header,
+    Footer
   }
 }
 </script>
