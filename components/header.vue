@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:0 150px;">
+  <div style="padding:0 150px;border-bottom:2px solid #dddddd;border-shadow:2px solid #f5f5f5">
       <el-row type="flex" justify="space-between" align="middle">
           <el-row type="flex" justify="space-between" align="middle" class="left">
             <div class="logo">
@@ -13,8 +13,7 @@
             </div>
           </el-row>
          <div class="right">
-            <span>登录 / </span>
-            <span>注册</span>
+            <nuxt-link to="/user/login">登录 / 注册</nuxt-link>
          </div>
       </el-row>
   </div>
