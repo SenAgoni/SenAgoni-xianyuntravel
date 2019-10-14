@@ -70,8 +70,6 @@ export default {
                         this.$message.success("登录成功")
                         this.$store.commit('user/setUserInfo',data);
                         this.$router.push('/')
-                    }).catch(rej=>{
-                        this.$message.error("用户名或是密码无效")
                     })
                     // 登录成功值后要把数据存入到仓库中以便登录验证
                 }else{
