@@ -68,7 +68,8 @@ export default {
                     }).then(res=>{
                         const data = res.data
                         this.$message.success("登录成功")
-                        this.$store.commit('user/setuserInfo',data);
+                        this.$store.commit('user/setUserInfo',data);
+                        this.$router.push('/')
                     }).catch(rej=>{
                         this.$message.error("用户名或是密码无效")
                     })

@@ -13,7 +13,25 @@
             </div>
           </el-row>
          <div class="right">
-            <nuxt-link to="/user/login">登录 / 注册</nuxt-link>
+            <nuxt-link to="/user/login" v-if="!$store.state.user.userInfo.token">登录 / 注册</nuxt-link>
+            <el-dropdown :hide-on-click="false" v-else>
+                <img 
+                style="width:45px;height:45px;border-radius:50%;vertical-align:middle;border:2px solid #409eff"
+                :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"
+                >
+                <span class="el-dropdown-link">
+                    {{$store.state.user.userInfo.user.nickname}}
+                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>个人中心</el-dropdown-item>
+                    <el-dropdown-item>
+                        <!-- 在插件中不能直接使用点击数事件的方法的,需要emit或者是在里面添加一个标签, -->
+                        <span @click="handleLoginOut">退出</span>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+
          </div>
       </el-row>
   </div>
@@ -21,7 +39,12 @@
 
 <script>
 export default {
-
+    methods:{
+        handleLoginOut(){
+            this.$store.commit('user/setUserInfo',{});
+            this.$router.push("user/login")
+        }
+    }
 }
 </script>
 
