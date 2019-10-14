@@ -61,17 +61,10 @@ export default {
             // 来验证用户是否已正确输入密码与用户名,并且返回一个布尔类型的值
             this.$refs.form.validate((valid)=>{
                 if(valid){
-                    this.$axios({
-                        url:"/accounts/login",
-                        data:this.form,
-                        method:"POST"
-                    }).then(res=>{
-                        const data = res.data
-                        this.$message.success("登录成功")
-                        this.$store.commit('user/setUserInfo',data);
-                        this.$router.push('/')
-                    })
-                    // 登录成功值后要把数据存入到仓库中以便登录验证
+                   const res = this.$store.dispatch('user/login',this.form);
+                   const data = res.data;
+                   this.$message.success("登录成功")
+                   this.$router.push('/')
                 }else{
                     this.$message.error("请正确输入用户名和密码")
                 }

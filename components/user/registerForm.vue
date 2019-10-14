@@ -105,24 +105,15 @@ export default {
     },
     methods:{
         handleCheckCode(){
-                let num = 10;
-              var timeId =  setInterval(() => {
+              let num = 10;
+              var timeId = setInterval(async () => {
                     this.$refs.codebtn.innerHTML="已发送(" + num + ")";
                     num--;
-                     if(num == 6){
-                     // 手机验证码也需要发送axios请求
-                        this.$axios({
-                            url:"/captchas",
-                            method:"POST",
-                            data:{tel:this.form.username}
-                        }).then(res=>{
-                            if(res.status === 200){
-                                const data = res.data;
-                                this.$message.success("验证码为"+data.code)
-                            }
-                        })
+                     if(num === 6){
+                        const res =await this.$store.dispatch('user/sendCheckcode',this.form.username);
+                        this.$message.success("验证码为" + res.data.code)
                     }
-                    if(num == 0){
+                    if(num === 0){
                         this.$refs.codebtn.innerHTML="发送验证码"
                         clearInterval(timeId)
                     }
@@ -132,21 +123,11 @@ export default {
             this.$refs.form.validate(async (valid)=>{
                 if(valid){
                     // 在发送数据之前需要把表单内二次验证密码的数据删除
-                   const {checkpassword,...props} = this.form
-                    // 这里的props代表的是除了checkpassword以外的所有数据
-                    // 发送axios请求
-                    var res = await this.$axios({
-                        url:"/accounts/register",
-                        method:"POST",
-                        data:props
-                    })
-                    if( res.status==200 ){
-                        // 注册好后就直接登录了
-                        const data = res.data;
-                        this.$message.success("注册成功")
-                        this.$store.commit('user/setUserInfo',data);
-                        this.$router.push('/')
-                    }
+                    const {checkpassword,...props} = this.form;
+                    const res = this.$store.dispatch('user/register',props);
+                    const data = res.data;
+                    this.$message.success("注册成功")
+                    this.$router.push('/')
                 }else{
                     this.$message.error("请正确输入用户名和密码")
                 }
