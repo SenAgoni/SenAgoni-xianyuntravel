@@ -6,7 +6,8 @@ export default ({$axios,redirect})=>{
     $axios.onError(err=>{
         // 这里是一个错误的请求的拦截器，只要请求发生错误就会触发这一个方法 response就是一个拦截的信息
         if(err.response.status === 400){
-            Message.error(err.response.data.message)
+            Message.error(err.response.data.message);
+            return;
         }
     })
 }

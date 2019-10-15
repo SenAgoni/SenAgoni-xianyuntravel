@@ -51,8 +51,7 @@ export const actions = {
             method:"POST",
             data:{tel}
         })
-        if(res.status === 200){
-            console.log(res)
+        if(res.status === 200){ 
             return res
         }
     }
