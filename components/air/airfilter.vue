@@ -3,14 +3,15 @@
         <el-row type="flex" class="filters-top" justify="space-between" align="middle">
             <el-col :span="8">
                 单程： 
-                广州 - 上海 
+                {{$route.query.departCity}} - {{$route.query.destCity}}
                 / 
-                2019-06-17
+                {{$route.query.departDate}}
             </el-col>
             <el-col :span="4">
                 <el-select size="mini" v-model="airport" placeholder="起飞机场" @change="handleAirport">
                     <el-option
-                    label="白云机场"
+                    v-for="(item,index) in dataAir.airport"
+                    :label="item"
                     value="白云机场"
                     >
                     </el-option>
@@ -19,7 +20,8 @@
             <el-col :span="4">
                 <el-select size="mini" v-model="flightTimes"  placeholder="起飞时间" @change="handleFlightTimes">
                     <el-option
-                    label="00:00 - 06:00"
+                    v-for="(item,index) in dataAir.flightTimes"
+                    :label="item.from+`--`+item.to"
                     value="1"
                     >
                     </el-option>
@@ -28,7 +30,8 @@
             <el-col :span="4">
                 <el-select size="mini" v-model="company"  placeholder="航空公司" @change="handleCompany">
                     <el-option
-                    label="厦门航空"
+                    v-for="(item,index) in dataAir.company"
+                    :label="item"
                     value="厦门航空">
                     </el-option>
                 </el-select>
@@ -64,6 +67,12 @@ export default {
             flightTimes: "",    // 出发时间
             company: "",        // 航空公司
             airSize: "",        // 机型大小
+        }
+    },
+    props:{
+        dataAir:{
+            type:Object,
+            default:{}
         }
     },
     methods: {

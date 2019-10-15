@@ -31,7 +31,7 @@
             <el-row type="flex" justify="space-between" align="middle">
                 <el-col :span="4">低价推荐</el-col>
                 <el-col :span="20">
-                    <el-row type="flex" v-for="(seat,index) in data.seat_infos" justify="space-between" align="middle" class="flight-sell">
+                    <el-row type="flex" v-for="(seat,index) in data.seat_infos" :key="index" justify="space-between" align="middle" class="flight-sell">
                         <el-col :span="16" class="flight-sell-left">
                             <span>{{seat.group_name}}</span> | {{seat.supplierName}}
                         </el-col>

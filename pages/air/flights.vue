@@ -6,7 +6,9 @@
             <div class="flights-content">
                 <!-- 过滤条件 -->
                 <div>
-                   <Airfilter/>
+                   <Airfilter
+                   :dataAir="flightDatas.options"
+                   />
                 </div>
                 
                 <!-- 航班头部布局 -->
@@ -16,9 +18,11 @@
                 
                 
                 <!-- 航班信息 要循环的是组件-->
-                <div>
+                <div v-if="flightList.length>0">
                     <Airlist v-for="(item,index) in flightList"
-                    :data="item"/>
+                    :key="index"
+                    :data="item"
+                    />
                      <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -28,6 +32,9 @@
                         layout="total, sizes, prev, pager, next, jumper"
                         :total="flightDatas.total">
                     </el-pagination>
+                </div>
+                <div v-if="flightList.length === 0" style="padding:50px; text-align:center">
+                    暂无航班信息
                 </div>
             </div>
 
@@ -49,7 +56,8 @@ export default {
     data(){
         return {
             flightDatas:{
-                flights:[]
+                flights:[],
+                options:{}
             },
             pageIndex:1,
             pageSize:5,
@@ -75,6 +83,20 @@ export default {
             params:this.$route.query
         }).then(res=>{
             this.flightDatas = res.data;
+            const arr = this.flightDatas.options.flightTimes.map(v=>{
+                    if(v.from<10){
+                        v.from = `0`+v.from+`:00`
+                    }else{
+                        v.from = v.from+`:00`
+                    }
+                    if(v.to<10){
+                        v.to = `0`+v.to+`:00`
+                    }else{
+                        v.to = v.to+`:00`
+                    }
+                    return v;
+                })
+                this.flightDatas.options.flightTimes = arr
         })
 
     },
