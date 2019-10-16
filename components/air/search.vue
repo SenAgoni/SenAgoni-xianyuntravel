@@ -161,6 +161,8 @@ export default {
                 destCity:{message:"请输入到达城市",value:this.form.destCity},
                 departDate:{message:"请输入出发日期",value:this.form.departDate},
             }
+             // 把this.form数据存到history 也就是store 当中去
+               this.$store.commit('air/setHistory',this.form)
             // 遍历对象，如果对象中的value的值是空的话就要阻止提交，并且警告用户
             Object.keys(rules).some(v=>{
                 if(!rules[v].value){

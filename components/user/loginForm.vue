@@ -63,7 +63,6 @@ export default {
                 if(valid){
                    const res = this.$store.dispatch('user/login',this.form);
                    const data = res.data;
-                   this.$message.success("登录成功")
                    this.$router.push('/')
                 }else{
                     this.$message.error("请正确输入用户名和密码")
