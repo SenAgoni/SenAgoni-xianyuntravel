@@ -8,6 +8,8 @@
                 <div>
                    <Airfilter
                    :dataAir="flightDatas.options"
+                   :data="dataList"
+                   @setDataList="setDataList"
                    />
                 </div>
                 
@@ -30,7 +32,7 @@
                         :page-sizes="[5, 10, 15, 20]"
                         :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="flightDatas.total">
+                        :total="total">
                     </el-pagination>
                 </div>
                 <div v-if="flightList.length === 0" style="padding:50px; text-align:center">
@@ -57,10 +59,18 @@ export default {
         return {
             flightDatas:{
                 flights:[],
-                options:{}
+                options:{},
+                info:{}
+            },
+            // 再复制一份数据出来
+            dataList:{
+                flights:[],
+                options:{},
+                info:{}
             },
             pageIndex:1,
             pageSize:5,
+            total:0,
         }
     },
     components:{
@@ -83,20 +93,25 @@ export default {
             params:this.$route.query
         }).then(res=>{
             this.flightDatas = res.data;
+            // 因为要避免dataList与flightDatas同时指向同一个内存地址，因为对象是一个复杂数据类型，内存地址是一致的，要复制一份出来
+            this.dataList = {...res.data};
+            // 总条数也要跟着筛选发生变化
+            this.total = this.flightDatas.total;
             const arr = this.flightDatas.options.flightTimes.map(v=>{
                     if(v.from<10){
-                        v.from = `0`+v.from+`:00`
+                        v.from = `0`+v.from
                     }else{
-                        v.from = v.from+`:00`
+                        v.from = v.from
                     }
                     if(v.to<10){
-                        v.to = `0`+v.to+`:00`
+                        v.to = `0`+v.to
                     }else{
-                        v.to = v.to+`:00`
+                        v.to = v.to
                     }
                     return v;
                 })
                 this.flightDatas.options.flightTimes = arr
+                this.dataList.options.flightTimes = arr
         })
 
     },
@@ -106,6 +121,11 @@ export default {
         },
         handleCurrentChange(val){
            this.pageIndex = val;
+        },
+        setDataList(val){
+            // 筛选后直接存数据
+            this.flightDatas.flights = val;
+            this.total = val.length;
         }
     }
 }
