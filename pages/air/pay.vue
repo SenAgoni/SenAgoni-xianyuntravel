@@ -27,31 +27,52 @@
 
 <script>
 import QRCode from 'qrcode'
+import { async } from 'q';
 export default {
     data(){
         return {
-            order:{}
+            order:{},
+            timerId:null,
         }
     },
     mounted(){
         if(!this.$store.state.user.userInfo.token) return;
-        setTimeout(() => {
-            this.$axios({
+        setTimeout(async () => {
+          const res = await this.$axios({
                 url:"/airorders/" + this.$route.query.id,
                 headers: {
                     Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
                 },
-            }).then(res=>{
-                if(res.status === 200){
-                    const data = res.data;
-                    this.order = data;
-                     const canvas = document.querySelector("#qrcode-stage");
+            })
+            if(res.status === 200){
+                const data = res.data;
+                this.order = data;
+                    const canvas = document.querySelector("#qrcode-stage");
                     QRCode.toCanvas(canvas, this.order.payInfo.code_url, {
                         width: 250
                     });
-                }
-            })
+            }
+          this.timerId = setInterval(async () => {
+                   const res = await this.$axios({
+                        url:"/airorders/checkpay",
+                        headers: {
+                            Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+                        },
+                        method:"POST",
+                        data:{
+                            id:this.$route.query.id,
+                            nonce_str:this.order.price,
+                            out_trade_no:this.order.orderNo,
+                        }
+                    })
+                    if(res.data.statusTxt==="支付完成"){
+                        clearInterval(this.timerId);
+                    }
+            }, 3000);
         }, 10);
+    },
+    destroyed(){
+        clearInterval(this.timerId)
     }
 }
 </script>
