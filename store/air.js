@@ -7,7 +7,7 @@
      setHistory(state,data){
          if(state.history.length != 0 && state.history.length>=5){
             // 然后就要删除超出五条的
-            state.history.splice(4)
+            state.history.splice(3)
          }
         if(state.history.length!=0){
             state.history.some((v,index)=>{

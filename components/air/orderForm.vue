@@ -2,11 +2,14 @@
     <div class="main">
         <div class="air-column">
             <h2>乘机人</h2>
-            <el-form class="member-info">
-                <div class="member-info-item" >
-                    
+            <!-- 乘机人是需要循环的 -->
+            <el-form class="member-info" >
+                <div class="member-info-item" v-for="(item,index) in users" >
                     <el-form-item label="乘机人类型">
-                        <el-input placeholder="姓名" class="input-with-select">
+                        <el-input 
+                        placeholder="姓名" 
+                        class="input-with-select"
+                        v-model="item.username">
                             <el-select 
                             slot="prepend" 
                             value="1" 
@@ -18,17 +21,20 @@
 
                     <el-form-item label="证件类型">
                         <el-input 
-                        placeholder="证件号码"  class="input-with-select">
+                          placeholder="证件号码"
+                          class="input-with-select"
+                          v-model="item.id" 
+                          >
                             <el-select 
                             slot="prepend" 
-                            value="1"           
+                            value="1"          
                             placeholder="请选择">
                                 <el-option label="身份证" value="1" :checked="true"></el-option>
                             </el-select>
                         </el-input>
                     </el-form-item>
 
-                    <span class="delete-user" @click="handleDeleteUser()">-</span>
+                    <span class="delete-user" @click="handleDeleteUser(index)">-</span>
                 </div>
             </el-form>
 
@@ -38,10 +44,11 @@
         <div class="air-column">
             <h2>保险</h2>
             <div>
-                <div class="insurance-item">
-                    <el-checkbox 
-                    label="航空意外险：￥30/份×1  最高赔付260万" 
-                    border>
+                <div class="insurance-item" v-for="(item,index) in detail.insurances" >
+                    <el-checkbox
+                        :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" 
+                        @change="handleInsurances(item.id)"
+                        border>
                     </el-checkbox> 
                 </div>
             </div>
@@ -52,11 +59,11 @@
             <div class="contact">
                 <el-form label-width="60px">
                     <el-form-item label="姓名">
-                        <el-input></el-input>
+                        <el-input v-model="contactName" :value="contactName"></el-input>
                     </el-form-item>
 
                     <el-form-item label="手机">
-                        <el-input placeholder="请输入内容">
+                        <el-input placeholder="请输入内容" :value="contactPhone" v-model="contactPhone">
                             <template slot="append">
                             <el-button @click="handleSendCaptcha">发送验证码</el-button>
                             </template>
@@ -64,7 +71,7 @@
                     </el-form-item>
 
                     <el-form-item label="验证码">
-                        <el-input></el-input>
+                        <el-input v-model="captcha"></el-input>
                     </el-form-item>
                 </el-form>   
                 <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -74,26 +81,93 @@
 </template>
 
 <script>
+import { async } from 'q';
 export default {
+    data(){
+        return {
+            users:[
+                {username:"",id:""},
+            ],
+            captcha:"",
+            insurances:[],
+            contactPhone:"",
+            contactName:"",
+            invoice:false,
+            seat_xid:this.$route.query.seat_xid,
+            air:this.$route.query.id,
+            detail:{},
+        }
+    },
+    mounted(){
+        this.$axios({
+            url:"/airs/" + this.$route.query.id,
+            params:{
+                seat_xid:this.$route.query.seat_xid,
+            }
+        }).then(res=>{
+            this.detail = res.data
+            this.checkInsurances = this.detail.insurances;
+        })
+    },
     methods: {
         // 添加乘机人
         handleAddUsers(){
-            
+            this.users.push({username:"",id:""});
         },
         
         // 移除乘机人
-        handleDeleteUser(){
-
+        handleDeleteUser(index){
+            this.users.splice(index,1)
+        },
+        handleInsurances(id){
+            if(this.insurances.length>0){
+                // 会返回一个索引值
+                const index = this.insurances.indexOf(id);
+                if(index > -1){
+                    // 代表已经存在 存在了就要删除才行
+                    this.insurances.splice(index,1);
+                }else{
+                    this.insurances.push(id);
+                }
+            }else{
+                this.insurances.push(id);
+            }
         },
         
         // 发送手机验证码
         handleSendCaptcha(){
-            
+            // 验证手机是否已经输入
+            if(!this.contactPhone){
+                this.$message.error("请输入手机号码");
+            }else{
+              const promise =  this.$store.dispatch('user/sendCheckcode',this.contactPhone);
+              promise.then(res=>{
+                  this.$message.success(`验证码为：`+res.data.code)
+              })
+            }
         },
 
         // 提交订单
         handleSubmit(){
-            
+            const data ={
+                users:this.users,
+                contactPhone:this.contactPhone,
+                contactName:this.contactName,
+                invoice:this.invoice,
+                seat_xid:this.seat_xid,
+                air:this.air,
+                insurances:this.insurances
+            }
+            this.$axios({
+                url:"/airorders",
+                method:"POST",
+                data,
+                headers:{
+                    Authorization:`Bearer`+ this.$store.state.user.userInfo.token,
+                }
+            }).then(res=>{
+                console.log(res);
+            })
         }
     }
 }
