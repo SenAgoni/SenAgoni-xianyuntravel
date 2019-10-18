@@ -77,11 +77,11 @@
                 <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
             </div>
         </div>
+        <span v-show="false">{{Allprice}}</span>
     </div>
 </template>
 
 <script>
-import { async } from 'q';
 export default {
     data(){
         return {
@@ -98,6 +98,22 @@ export default {
             detail:{},
         }
     },
+    // 监听变化，然后获取价格数据
+    computed:{
+        Allprice(){
+            if(!this.detail.seat_infos) return;
+            let price = 0;
+            price += this.detail.seat_infos.org_settle_price;
+            // price += this.detail.insurances[0].price * this.insurances.length;
+            this.insurances.forEach(v=>{
+                price += this.detail.insurances[v-1].price * this.users.length
+            })
+            price += this.detail.airport_tax_audlet;
+            price = this.users.length * price;
+            this.$emit("getAllprice",price)
+            return price;
+        }
+    },
     mounted(){
         this.$axios({
             url:"/airs/" + this.$route.query.id,
@@ -105,7 +121,8 @@ export default {
                 seat_xid:this.$route.query.seat_xid,
             }
         }).then(res=>{
-            this.detail = res.data
+            this.detail = res.data;
+            this.$emit("getAlldata",this.detail);
             this.checkInsurances = this.detail.insurances;
         })
     },
@@ -166,7 +183,7 @@ export default {
                     Authorization:`Bearer`+ this.$store.state.user.userInfo.token,
                 }
             }).then(res=>{
-                console.log(res);
+                console.log(res)
             })
         }
     }
