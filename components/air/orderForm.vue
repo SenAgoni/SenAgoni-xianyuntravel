@@ -173,17 +173,26 @@ export default {
                 invoice:this.invoice,
                 seat_xid:this.seat_xid,
                 air:this.air,
-                insurances:this.insurances
+                insurances:this.insurances,
+                captcha:this.captcha
             }
             this.$axios({
                 url:"/airorders",
                 method:"POST",
-                data,
                 headers:{
-                    Authorization:`Bearer`+ this.$store.state.user.userInfo.token,
-                }
+                    Authorization:`Bearer ${this.$store.state.user.userInfo.token}`,
+                },
+                data,
             }).then(res=>{
-                console.log(res)
+                const {data,message} = res.data;
+                if(message === "订单提交成功"){
+                    this.$message.success("正在生成订单中,请稍等")
+                    // 然后就要跳转到订单页
+                    this.$router.push({
+                        path:'/air/pay',
+                        query: {id:data.id},
+                    })
+                }
             })
         }
     }

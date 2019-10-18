@@ -9,5 +9,10 @@ export default ({$axios,redirect})=>{
             Message.error(err.response.data.message);
             return;
         }
+        if([401,403].indexOf(err.response.status) > -1){
+            Message.error("请先登录");
+            redirect('/user/login')
+            return;
+        }
     })
 }
