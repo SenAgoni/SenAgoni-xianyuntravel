@@ -36,7 +36,6 @@ export default {
         }
     },
     mounted(){
-        if(!this.$store.state.user.userInfo.token) return;
         setTimeout(async () => {
           const res = await this.$axios({
                 url:"/airorders/" + this.$route.query.id,

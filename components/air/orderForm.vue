@@ -104,9 +104,8 @@ export default {
             if(!this.detail.seat_infos) return;
             let price = 0;
             price += this.detail.seat_infos.org_settle_price;
-            // price += this.detail.insurances[0].price * this.insurances.length;
             this.insurances.forEach(v=>{
-                price += this.detail.insurances[v-1].price * this.users.length
+                price += this.detail.insurances[v-1].price 
             })
             price += this.detail.airport_tax_audlet;
             price = this.users.length * price;
