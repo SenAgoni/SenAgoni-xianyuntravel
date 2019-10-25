@@ -2,7 +2,7 @@
   <div>
        <nuxt-link :to="`/hotel/hotelDetail?id=${item.id}`">
         <el-row class="content">
-        <nuxt-link :to="`/hotel/detail?id=`+item.id"> 
+        <nuxt-link :to="`/hotel/hotelDetail?id=`+item.id"> 
             <el-col :span="7">
                 <img :src="item.photos" style="width:320px;height:210px" alt="">
             </el-col>

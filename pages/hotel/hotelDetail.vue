@@ -44,7 +44,6 @@
         <el-row>
           <el-col :span="12" v-for="(item,index) in imgs" :key="index">
             <i @click="changeImg(index)">
-              <!-- <img :src="$axios.defaults.baseURL+item.url" alt /> -->
               <img :src="item.src" alt />
             </i>
           </el-col>
