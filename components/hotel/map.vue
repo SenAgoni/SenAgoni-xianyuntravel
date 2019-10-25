@@ -185,7 +185,6 @@ export default {
       this.showMarker(this.aroundData);
 
       // 鼠标悬浮右侧位置数据上时该位置移动到地图中心
-      console.log(1111, this.$refs.content[18], this.$refs.content)
       setTimeout(() => {
         this.$refs.content.forEach((item,index) => {
           item.addEventListener("mouseover", e => {
