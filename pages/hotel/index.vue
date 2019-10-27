@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
+    <div class="container" style="width:1100px;">
        <div>酒店>{{cityInfo[0].name}}酒店预订</div>
-      <el-row type="flex" justify="space-between" style="width:1000px;margin:20px 0">
+      <el-row type="flex" justify="space-between" style="margin-bottom:10px">
           <el-col :span="6">
               <el-autocomplete
                 class="inline-input"

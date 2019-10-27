@@ -1,11 +1,11 @@
 <template>
-  <div style="padding:0 150px;border-bottom:2px solid #dddddd;border-shadow:2px solid #f5f5f5">
+  <div style="padding:0 150px;width:1100px;border-bottom:2px solid #dddddd;border-shadow:2px solid #f5f5f5">
       <el-row type="flex" justify="space-between" align="middle">
           <el-row type="flex" justify="space-between" align="middle" class="left">
             <div class="logo">
                 <img src="http://157.122.54.189:9093/images/logo.jpg" alt="">
             </div>
-            <div class="navbar">
+            <div class="navbar" style="height:70px">
                 <nuxt-link to="/">首页</nuxt-link>
                 <nuxt-link to="/post">旅游攻略</nuxt-link>
                 <nuxt-link to="/hotel?city=深圳">酒店</nuxt-link>
@@ -53,6 +53,11 @@ export default {
                 background:#409eff;
                 color:#fff!important;
             }
+    .navbar{
+        a{
+            height:70px;
+        }
+    }
     a{
         display:inline-block;
         padding:0 20px;

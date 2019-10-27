@@ -45,6 +45,7 @@
           />
           <i
             class="el-icon-search"
+            @click="handleSearch"
           ></i>
         </el-row>
       </div>
